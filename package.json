@@ -1,0 +1,16 @@
+{
+  "name": "layout-remixer",
+  "version": "2.0.0",
+  "description": "Cut, rearrange and remix UI screenshots right in the browser.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.3.7",
+    "vite-plugin-singlefile": "^2.3.4"
+  }
+}

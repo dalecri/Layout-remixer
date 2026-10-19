@@ -1,0 +1,67 @@
+/* Design tokens. Every color, radius and shadow in the app comes from here. */
+:root {
+  color-scheme: dark;
+
+  /* Surfaces, darkest to lightest */
+  --bg-app: #0c0d10;
+  --bg-stage: #08090b;
+  --surface-1: #131418;
+  --surface-2: #1a1b20;
+  --surface-3: #222329;
+  --surface-4: #2b2c33;
+
+  /* Hairlines */
+  --line-1: rgba(255, 255, 255, 0.06);
+  --line-2: rgba(255, 255, 255, 0.10);
+  --line-3: rgba(255, 255, 255, 0.16);
+
+  /* Text */
+  --text-1: #f1f2f4;
+  --text-2: #a3a6af;
+  --text-3: #6c707a;
+
+  /* Brand accent (warm ember) */
+  --accent: #ff7a3d;
+  --accent-hi: #ff9259;
+  --accent-lo: #e8602a;
+  --accent-ink: #1d0d03;
+  --accent-a10: rgba(255, 122, 61, 0.10);
+  --accent-a20: rgba(255, 122, 61, 0.20);
+  --accent-a35: rgba(255, 122, 61, 0.35);
+
+  --danger: #ff5d65;
+  --danger-a12: rgba(255, 93, 101, 0.12);
+  --success: #3dd598;
+
+  /* Radii */
+  --r-xs: 5px;
+  --r-sm: 7px;
+  --r-md: 9px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 999px;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--line-2);
+  --shadow-lg: 0 30px 80px -20px rgba(0, 0, 0, 0.75), 0 0 0 1px var(--line-2);
+  --inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* Type */
+  --font-ui: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-lg: 15px;
+
+  /* Layout */
+  --topbar-h: 52px;
+  --panel-w: 288px;
+  --gap: 10px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 120ms;
+  --t-med: 220ms;
+}

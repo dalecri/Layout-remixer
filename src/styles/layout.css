@@ -1,0 +1,179 @@
+/* ---------- App frame ---------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: var(--topbar-h);
+  padding: 0 12px 0 14px;
+  padding-top: env(safe-area-inset-top);
+  box-sizing: content-box;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--line-1);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 40;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(255, 122, 61, 0.3));
+}
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+.brand-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.doc-info {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40vw;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.topbar-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--line-2);
+  margin: 0 4px;
+}
+
+/* ---------- Workspace ---------- */
+.workspace {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  position: relative;
+}
+
+/* ---------- Side panel ---------- */
+.panel {
+  width: var(--panel-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1);
+  border-left: 1px solid var(--line-1);
+  min-height: 0;
+  position: relative;
+  z-index: 20;
+}
+
+.sheet-handle {
+  display: none;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  :root {
+    --topbar-h: 48px;
+  }
+
+  .workspace {
+    flex-direction: column;
+  }
+
+  .panel {
+    width: 100%;
+    height: min(46vh, 380px);
+    border-left: 0;
+    border-top: 1px solid var(--line-2);
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    margin-top: -14px;
+    box-shadow: 0 -12px 40px -12px rgba(0, 0, 0, 0.6);
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: height var(--t-med) var(--ease-out);
+  }
+  .panel.is-collapsed {
+    height: calc(64px + env(safe-area-inset-bottom));
+  }
+  .panel.is-collapsed .inspector,
+  .panel.is-collapsed .panel-foot,
+  .panel.is-collapsed .layers {
+    display: none;
+  }
+
+  .sheet-handle {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .sheet-handle span {
+    width: 36px;
+    height: 4px;
+    border-radius: var(--r-full);
+    background: var(--surface-4);
+  }
+
+  .panel-foot {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hide-sm {
+    display: none;
+  }
+  .topbar {
+    padding: 0 8px 0 10px;
+    padding-top: env(safe-area-inset-top);
+  }
+  .topbar-actions {
+    gap: 2px;
+  }
+  .topbar-sep {
+    display: none;
+  }
+  #openImageBtn {
+    width: 32px;
+    padding: 0;
+  }
+  .brand-name {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .hide-xs {
+    display: none;
+  }
+  #exportBtn {
+    width: 34px;
+    padding: 0;
+  }
+  .doc-info {
+    max-width: 30vw;
+  }
+}
