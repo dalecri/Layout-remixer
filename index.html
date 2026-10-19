@@ -1,0 +1,2877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Layout Remix — Quiet Pixel UI Cut & Rearrange</title>
+  <!-- Google Fonts with graceful local fallback for offline file:// usage -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #1E1826;
+      --bg-canvas: #16111C;
+      --bg-panel: #2A2233;
+      --bg-panel-elevated: #352B40;
+      --bg-panel-hover: #3F334D;
+      --border-soft: #433752;
+      --border-focus: #635178;
+      --text-main: #EDE7F2;
+      --text-muted: #9B8FA8;
+      --text-dim: #6B5E78;
+      --accent: #E8873A;
+      --accent-hover: #F29A52;
+      --accent-soft: rgba(232, 135, 58, 0.16);
+      --danger: #E25C67;
+      --danger-soft: rgba(226, 92, 103, 0.16);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-cozy: 0 10px 30px rgba(10, 7, 15, 0.45);
+      --font-mono: 'Space Mono', 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior: none;
+    }
+
+    /* Main Application Grid */
+    .app-shell {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      padding: 12px;
+      gap: 12px;
+    }
+
+    /* Top Bar / Toolbar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 8px 14px;
+      box-shadow: var(--shadow-cozy);
+      flex-shrink: 0;
+      gap: 10px;
+      flex-wrap: wrap;
+      z-index: 30;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Main Application Grid */
+    .app-shell {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      padding: 12px;
+      gap: 12px;
+    }
+
+    /* Top Bar / Toolbar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 8px 16px;
+      box-shadow: var(--shadow-cozy);
+      flex-shrink: 0;
+      gap: 12px;
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-family: var(--font-pixel);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      color: var(--text-main);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: var(--bg-panel-elevated);
+      color: var(--accent);
+      border: 1px solid var(--border-soft);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Tool Groups */
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-page);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
+    }
+
+    .divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border-soft);
+      margin: 0 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 7px 11px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .btn:hover:not(:disabled) {
+      color: var(--text-main);
+      background: var(--bg-panel-hover);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1A120B;
+      font-weight: 700;
+      border-color: var(--accent);
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      color: #1A120B;
+      box-shadow: 0 0 16px rgba(232, 135, 58, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--bg-panel-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--bg-panel-hover);
+      border-color: var(--border-focus);
+    }
+
+    .kbd-hint {
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text-muted);
+      border: 1px solid var(--border-soft);
+    }
+
+    .btn.active .kbd-hint {
+      color: var(--accent);
+      border-color: rgba(232, 135, 58, 0.4);
+    }
+
+    /* Workspace Area */
+    .workspace {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      gap: 12px;
+      position: relative;
+    }
+
+    /* Viewport Canvas Container */
+    .canvas-stage {
+      flex: 1;
+      position: relative;
+      background-color: var(--bg-canvas);
+      background-image: radial-gradient(var(--border-soft) 1px, transparent 1px);
+      background-size: 20px 20px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+    }
+
+    .canvas-stage.drag-over {
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 3px var(--accent-soft), 0 0 25px var(--accent-soft);
+    }
+
+    #viewportCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Empty State Overlay */
+    .empty-state {
+      position: relative;
+      z-index: 5;
+      max-width: 480px;
+      width: calc(100% - 32px);
+      background: rgba(42, 34, 51, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px dashed var(--border-focus);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-cozy);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .empty-state.hidden {
+      display: none;
+    }
+
+    .empty-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .empty-title {
+      font-family: var(--font-pixel);
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .empty-desc {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    .empty-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .empty-tips {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border-soft);
+      padding-top: 12px;
+    }
+
+    /* Floating Bottom Status HUD */
+    .canvas-hud {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 10;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hud-pill {
+      pointer-events: auto;
+      background: rgba(42, 34, 51, 0.9);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 6px 12px;
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-cozy);
+    }
+
+    .hud-pill strong {
+      color: var(--text-main);
+    }
+
+    /* On-screen Touch Nudge D-Pad */
+    .touch-nudge-pad {
+      pointer-events: auto;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      background: rgba(42, 34, 51, 0.94);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 4px 6px;
+      box-shadow: var(--shadow-cozy);
+    }
+
+    .touch-nudge-pad.visible {
+      display: inline-flex;
+    }
+
+    .nudge-step-btn {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 0 6px;
+      height: 26px;
+      cursor: pointer;
+    }
+
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn-sm {
+      background: var(--bg-panel-elevated);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      transition: all 0.12s ease;
+    }
+
+    .icon-btn-sm:hover:not(:disabled) {
+      background: var(--bg-panel-hover);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .icon-btn-sm:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* Right Sidebar: Layers & Hole Fill Panel */
+    .sidebar {
+      width: 310px;
+      flex-shrink: 0;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-cozy);
+    }
+
+    .sidebar-header {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: default;
+    }
+
+    .sheet-drag-handle {
+      display: none;
+      width: 36px;
+      height: 4px;
+      background: var(--border-focus);
+      border-radius: 99px;
+      margin: 6px auto 2px;
+    }
+
+    .mobile-toggle-hint {
+      display: none;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    .sidebar-title {
+      font-family: var(--font-pixel);
+      font-size: 10px;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .layer-count-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--bg-page);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 99px;
+      border: 1px solid var(--border-soft);
+      font-weight: 700;
+    }
+
+    .inspector-bar {
+      padding: 10px 14px;
+      background: var(--bg-page);
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .fill-preview-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-panel);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      font-size: 11px;
+    }
+
+    .color-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: #2A2233;
+    }
+
+    /* Layers List */
+    .layers-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .layers-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .layers-list::-webkit-scrollbar-thumb {
+      background: var(--border-soft);
+      border-radius: 99px;
+    }
+
+    .layer-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg-panel-elevated);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.14s ease;
+      position: relative;
+    }
+
+    .layer-card:hover {
+      background: var(--bg-panel-hover);
+      border-color: var(--border-focus);
+    }
+
+    .layer-card.selected {
+      border-color: var(--accent);
+      background: rgba(232, 135, 58, 0.12);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .layer-card.base-layer {
+      background: var(--bg-page);
+      border-style: dashed;
+      cursor: default;
+      margin-top: auto;
+    }
+
+    .layer-thumb-wrap {
+      width: 42px;
+      height: 34px;
+      border-radius: 6px;
+      background-color: var(--bg-canvas);
+      background-image: linear-gradient(45deg, #231C2B 25%, transparent 25%),
+                        linear-gradient(-45deg, #231C2B 25%, transparent 25%),
+                        linear-gradient(45deg, transparent 75%, #231C2B 75%),
+                        linear-gradient(-45deg, transparent 75%, #231C2B 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .layer-thumb-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .layer-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .layer-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .layer-card.hidden-layer .layer-name,
+    .layer-card.hidden-layer .layer-thumb-wrap {
+      opacity: 0.45;
+    }
+
+    .layer-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .layer-actions {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .layer-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .layer-btn svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .layer-btn:hover:not(:disabled) {
+      background: var(--bg-page);
+      color: var(--text-main);
+      border-color: var(--border-soft);
+    }
+
+    .layer-btn.delete-btn:hover:not(:disabled) {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .layer-btn:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    /* Sidebar Footer Help */
+    .sidebar-footer {
+      padding: 12px 14px;
+      background: var(--bg-page);
+      border-top: 1px solid var(--border-soft);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .shortcut-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--bg-panel-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--accent);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      box-shadow: var(--shadow-cozy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: toastIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Responsive adjustments for smaller viewports & mobile devices */
+    @media (max-width: 900px) {
+      .app-shell {
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .topbar {
+        padding: 8px 10px;
+        gap: 8px;
+      }
+
+      .brand-subtitle,
+      .kbd-hint {
+        display: none !important;
+      }
+
+      .workspace {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: 220px;
+        transition: height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 25;
+      }
+
+      .sidebar.collapsed {
+        height: 48px;
+      }
+
+      .sheet-drag-handle {
+        display: block;
+      }
+
+      .mobile-toggle-hint {
+        display: inline;
+      }
+
+      .sidebar-header {
+        padding: 6px 14px 10px;
+        cursor: pointer;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .layer-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      .layer-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .brand-title {
+        font-size: 10px;
+      }
+
+      .brand-logo {
+        width: 28px;
+        height: 28px;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: space-between;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .toolbar-group {
+        flex: 1;
+        justify-content: space-around;
+      }
+
+      .btn {
+        padding: 8px 9px;
+        font-size: 11px;
+        gap: 5px;
+      }
+
+      .btn-compact-mobile span {
+        display: none;
+      }
+
+      .empty-state {
+        padding: 20px 16px;
+      }
+
+      .empty-title {
+        font-size: 11px;
+      }
+
+      .canvas-hud {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+      }
+
+      #coordsText {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Toolbar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo" title="Layout Remix — Quiet Pixel v3">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+            <rect x="2" y="2" width="5" height="5" fill="#E8873A"/>
+            <rect x="9" y="2" width="5" height="5" fill="#EDE7F2" fill-opacity="0.85"/>
+            <rect x="2" y="9" width="5" height="5" fill="#9B8FA8" fill-opacity="0.55"/>
+            <rect x="9" y="9" width="5" height="5" fill="#E8873A" fill-opacity="0.4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            Layout Remix
+            <span class="brand-badge">v1.1</span>
+          </div>
+          <div class="brand-subtitle">Cut &amp; rearrange UI screenshots locally</div>
+        </div>
+      </div>
+
+      <!-- Mode & History Controls -->
+      <div class="toolbar-group" role="toolbar" aria-label="Editing Tools">
+        <button id="modeSelectBtn" class="btn active" title="Box Select & Cut Mode (S)">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 8V6a2 2 0 0 1 2-2h2" />
+            <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+            <path d="M16 20h2a2 2 0 0 0 2-2v-2" />
+            <line x1="9" y1="12" x2="15" y2="12" />
+            <line x1="12" y1="9" x2="12" y2="15" />
+          </svg>
+          <span>Cut</span>
+          <span class="kbd-hint">S</span>
+        </button>
+
+        <button id="modeMoveBtn" class="btn" title="Move & Nudge Layers Mode (V)">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 9l-3 3 3 3" />
+            <path d="M9 5l3-3 3 3" />
+            <path d="M15 19l-3 3-3-3" />
+            <path d="M19 9l3 3-3 3" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <line x1="12" y1="2" x2="12" y2="22" />
+          </svg>
+          <span>Move</span>
+          <span class="kbd-hint">V</span>
+        </button>
+
+        <button id="modePanBtn" class="btn" title="Pan Canvas Mode (H or Two-Finger Drag)">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
+            <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
+            <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
+            <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
+          </svg>
+          <span>Pan</span>
+          <span class="kbd-hint">H</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <button id="undoBtn" class="btn btn-compact-mobile" disabled title="Undo (Ctrl+Z)">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 7v6h6" />
+            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+          </svg>
+          <span>Undo</span>
+        </button>
+
+        <button id="redoBtn" class="btn btn-compact-mobile" disabled title="Redo (Ctrl+Shift+Z)">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 7v6h-6" />
+            <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
+          </svg>
+          <span>Redo</span>
+        </button>
+      </div>
+
+      <!-- File & Project Operations -->
+      <div class="topbar-actions" style="display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;">
+        <button id="uploadScreenshotBtn" class="btn btn-secondary" title="Load a screenshot image (PNG, JPG, WebP)">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+          <span>Load</span>
+        </button>
+
+        <button id="loadDemoBtn" class="btn btn-secondary" title="Load built-in sample dashboard screenshot">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+          </svg>
+          <span>Sample</span>
+        </button>
+
+        <button id="saveProjectBtn" class="btn btn-secondary btn-compact-mobile" disabled title="Save project as editable JSON">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          <span>Save JSON</span>
+        </button>
+
+        <button id="loadProjectBtn" class="btn btn-secondary btn-compact-mobile" title="Load a saved Layout Remix .json project">
+          <svg viewBox="0 0 24 24">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+          </svg>
+          <span>Load JSON</span>
+        </button>
+
+        <button id="exportPngBtn" class="btn btn-primary" disabled title="Export full-resolution remixed PNG">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>Export</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hidden File Inputs -->
+    <input type="file" id="imageFileInput" accept="image/*" style="display:none" />
+    <input type="file" id="projectFileInput" accept=".json,application/json" style="display:none" />
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Canvas Stage -->
+      <section id="canvasStage" class="canvas-stage" aria-label="Screenshot Remix Canvas">
+        <canvas id="viewportCanvas"></canvas>
+
+        <!-- Empty State Card -->
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+          </div>
+          <h1 class="empty-title">Drop a UI Screenshot</h1>
+          <p class="empty-desc">
+            Drag &amp; drop any screenshot here, press <strong>Ctrl+V</strong> to paste from clipboard, or test right away with the built-in dashboard.
+          </p>
+          <div class="empty-actions">
+            <button id="emptyPickBtn" class="btn btn-primary">
+              <span>Choose Screenshot...</span>
+            </button>
+            <button id="emptyDemoBtn" class="btn btn-secondary">
+              <span>Load Sample Dashboard</span>
+            </button>
+          </div>
+          <div class="empty-tips">
+            <span>1. Draw box to cut</span>
+            <span>•</span>
+            <span>2. Auto median hole-fill</span>
+            <span>•</span>
+            <span>3. Drag to remix</span>
+          </div>
+        </div>
+
+        <!-- Bottom Canvas HUD -->
+        <div class="canvas-hud">
+          <div class="hud-pill">
+            <span id="statusText">Ready — Load or paste a screenshot</span>
+            <span id="coordsText" style="color: var(--text-dim);"></span>
+          </div>
+
+          <!-- On-Screen Nudge Pad for Mobile & Precision Touch Control -->
+          <div id="touchNudgePad" class="touch-nudge-pad" aria-label="Nudge Selected Layer">
+            <button id="nudgeStepBtn" class="nudge-step-btn" title="Toggle 1px or 10px nudge step">1px</button>
+            <button class="icon-btn-sm" data-nudge="left" title="Nudge Left">←</button>
+            <button class="icon-btn-sm" data-nudge="up" title="Nudge Up">↑</button>
+            <button class="icon-btn-sm" data-nudge="down" title="Nudge Down">↓</button>
+            <button class="icon-btn-sm" data-nudge="right" title="Nudge Right">→</button>
+          </div>
+
+          <div class="hud-pill zoom-controls">
+            <button id="zoomOutBtn" class="icon-btn-sm" title="Zoom Out (-)">−</button>
+            <span id="zoomLabel" style="min-width: 48px; text-align: center; color: var(--text-main); font-weight: 700;">100%</span>
+            <button id="zoomInBtn" class="icon-btn-sm" title="Zoom In (+)">+</button>
+            <button id="zoomFitBtn" class="icon-btn-sm" style="width: auto; padding: 0 8px; font-size: 11px;" title="Fit to Viewport (0)">Fit</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Sidebar / Mobile Collapsible Bottom Sheet: Layers & Inspector -->
+      <aside id="sidebarPanel" class="sidebar" aria-label="Layers Panel">
+        <div class="sheet-drag-handle"></div>
+        <div id="sidebarHeaderToggle" class="sidebar-header" title="Tap to expand/collapse layers on mobile">
+          <div class="sidebar-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8873A" stroke-width="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2" />
+              <polyline points="2 17 12 22 22 17" />
+              <polyline points="2 12 12 17 22 12" />
+            </svg>
+            <span>Layers Stack</span>
+            <span id="mobileSheetToggleHint" class="mobile-toggle-hint">▾</span>
+          </div>
+          <span id="layerCountBadge" class="layer-count-pill">0 cuts</span>
+        </div>
+
+        <div class="inspector-bar">
+          <span id="selectedLayerLabel">No cutout selected</span>
+          <div id="holeFillPreviewWrap" class="fill-preview-chip" title="Median border color sampled to fill the cut hole">
+            <span id="holeFillSwatch" class="color-swatch"></span>
+            <span id="holeFillHex">Auto Fill</span>
+          </div>
+        </div>
+
+        <div id="layersList" class="layers-list">
+          <!-- Dynamically populated cutouts + locked base layer -->
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="shortcut-row">
+            <span>Pan Canvas</span>
+            <span class="kbd-hint">Space + Drag / Mid-Click</span>
+          </div>
+          <div class="shortcut-row">
+            <span>Nudge Layer</span>
+            <span class="kbd-hint">Arrows (Shift = 10px)</span>
+          </div>
+          <div class="shortcut-row">
+            <span>Delete Restores Hole</span>
+            <span class="kbd-hint">Del / Backspace</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =========================================================================
+       * STATE & ARCHITECTURE
+       * =========================================================================
+       * - baseImageDataURL: Original unmodified screenshot DataURL.
+       * - baseCanvas: Offscreen canvas holding the pristine original screenshot pixels.
+       * - workingBaseCanvas: Offscreen canvas holding the base screenshot + median-filled
+       *   holes for all currently active (non-deleted) cutouts.
+       * - layers: Array of cutout objects ordered from bottom (index 0) to top (last index):
+       *     {
+       *       id: string,
+       *       name: string,
+       *       cutRect: { x, y, w, h },   // Original rectangle cut from base screenshot
+       *       x: number,                 // Current X position in image coordinates
+       *       y: number,                 // Current Y position in image coordinates
+       *       w: number,
+       *       h: number,
+       *       fillColor: string,         // Median hex color sampled from border pixels
+       *       visible: boolean,
+       *       patchDataUrl: string,      // Cutout pixel data as PNG DataURL (for save/thumb)
+       *       patchCanvas: HTMLCanvasElement // Cached offscreen canvas for fast rendering
+       *     }
+       */
+
+      const state = {
+        hasImage: false,
+        imageWidth: 0,
+        imageHeight: 0,
+        baseImageDataURL: null,
+        baseCanvas: document.createElement('canvas'),
+        workingBaseCanvas: document.createElement('canvas'),
+
+        layers: [],
+        selectedLayerId: null,
+        layerSeq: 1,
+
+        // Tool mode: 'select' (draw box to cut) | 'move' (drag/nudge layers)
+        mode: 'select',
+
+        // Viewport transform (screenpx = imagepx * zoom + panX)
+        zoom: 1,
+        panX: 0,
+        panY: 0,
+
+        // Interaction flags
+        isSpaceDown: false,
+        isPanning: false,
+        panStartScreenX: 0,
+        panStartScreenY: 0,
+        panOriginX: 0,
+        panOriginY: 0,
+
+        isSelectingBox: false,
+        selectStartImg: { x: 0, y: 0 },
+        selectCurrentImg: { x: 0, y: 0 },
+
+        isDraggingLayer: false,
+        dragLayerId: null,
+        dragStartImg: { x: 0, y: 0 },
+        dragLayerOrigin: { x: 0, y: 0 },
+
+        // Undo / Redo Stacks (snapshots of layers array)
+        undoStack: [],
+        redoStack: [],
+        maxHistory: 50,
+
+        // Mobile Nudge step (1 or 10)
+        nudgeStep: 1,
+
+        // Multi-touch Pinch-to-Zoom & Two-Finger Pan state
+        isPinching: false,
+        pinchStartDist: 0,
+        pinchStartZoom: 1,
+        pinchCenterImg: { x: 0, y: 0 },
+
+        // Animation timer for marching ants
+        antsOffset: 0
+      };
+
+      // DOM References
+      const canvasStage = document.getElementById('canvasStage');
+      const viewportCanvas = document.getElementById('viewportCanvas');
+      const ctx = viewportCanvas.getContext('2d');
+      const emptyState = document.getElementById('emptyState');
+
+      const modeSelectBtn = document.getElementById('modeSelectBtn');
+      const modeMoveBtn = document.getElementById('modeMoveBtn');
+      const modePanBtn = document.getElementById('modePanBtn');
+      const undoBtn = document.getElementById('undoBtn');
+      const redoBtn = document.getElementById('redoBtn');
+      const sidebarPanel = document.getElementById('sidebarPanel');
+      const sidebarHeaderToggle = document.getElementById('sidebarHeaderToggle');
+      const mobileSheetToggleHint = document.getElementById('mobileSheetToggleHint');
+      const touchNudgePad = document.getElementById('touchNudgePad');
+      const nudgeStepBtn = document.getElementById('nudgeStepBtn');
+      const uploadScreenshotBtn = document.getElementById('uploadScreenshotBtn');
+      const loadDemoBtn = document.getElementById('loadDemoBtn');
+      const saveProjectBtn = document.getElementById('saveProjectBtn');
+      const loadProjectBtn = document.getElementById('loadProjectBtn');
+      const exportPngBtn = document.getElementById('exportPngBtn');
+      const imageFileInput = document.getElementById('imageFileInput');
+      const projectFileInput = document.getElementById('projectFileInput');
+      const emptyPickBtn = document.getElementById('emptyPickBtn');
+      const emptyDemoBtn = document.getElementById('emptyDemoBtn');
+      const statusText = document.getElementById('statusText');
+      const coordsText = document.getElementById('coordsText');
+      const zoomOutBtn = document.getElementById('zoomOutBtn');
+      const zoomInBtn = document.getElementById('zoomInBtn');
+      const zoomFitBtn = document.getElementById('zoomFitBtn');
+      const zoomLabel = document.getElementById('zoomLabel');
+
+      const layerCountBadge = document.getElementById('layerCountBadge');
+      const selectedLayerLabel = document.getElementById('selectedLayerLabel');
+      const holeFillSwatch = document.getElementById('holeFillSwatch');
+      const holeFillHex = document.getElementById('holeFillHex');
+      const layersList = document.getElementById('layersList');
+      const toastContainer = document.getElementById('toastContainer');
+
+      /* =========================================================================
+       * UTILITY & TOAST HELPERS
+       * ========================================================================= */
+      function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<span style="color:var(--accent)">●</span><span>${message}</span>`;
+        toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.25s ease';
+          setTimeout(() => toast.remove(), 260);
+        }, 2400);
+      }
+
+      function clamp(val, min, max) {
+        return Math.max(min, Math.min(max, val));
+      }
+
+      function rgbToHex(r, g, b) {
+        const toHex = (n) => clamp(Math.round(n), 0, 255).toString(16).padStart(2, '0');
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+      }
+
+      function computeMedian(values) {
+        if (!values.length) return 0;
+        const sorted = Float32Array.from(values).sort();
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 !== 0
+          ? sorted[mid]
+          : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+      }
+
+      /* =========================================================================
+       * MEDIAN BORDER COLOR SAMPLER (HOLE FILL)
+       * =========================================================================
+       * Samples a 1-2px ring immediately outside (or along the perimeter of)
+       * the cut rectangle on the original screenshot and returns the median
+       * R, G, B color so flat UI backgrounds heal cleanly with zero seams.
+       */
+      function sampleMedianBorderColor(sourceCtx, imgW, imgH, rect) {
+        const rx = Math.round(rect.x);
+        const ry = Math.round(rect.y);
+        const rw = Math.round(rect.w);
+        const rh = Math.round(rect.h);
+
+        // Expand ring by 2px outside the cut box, clamped to image bounds
+        const pad = 2;
+        const sx = clamp(rx - pad, 0, imgW - 1);
+        const sy = clamp(ry - pad, 0, imgH - 1);
+        const ex = clamp(rx + rw + pad, 1, imgW);
+        const ey = clamp(ry + rh + pad, 1, imgH);
+        const sw = ex - sx;
+        const sh = ey - sy;
+
+        if (sw <= 0 || sh <= 0) return '#1E1826';
+
+        const imgData = sourceCtx.getImageData(sx, sy, sw, sh).data;
+        const rVals = [];
+        const gVals = [];
+        const bVals = [];
+
+        // Collect border pixels around the cut region
+        for (let py = 0; py < sh; py++) {
+          for (let px = 0; px < sw; px++) {
+            const globalX = sx + px;
+            const globalY = sy + py;
+            const insideCut =
+              globalX > rx &&
+              globalX < rx + rw - 1 &&
+              globalY > ry &&
+              globalY < ry + rh - 1;
+
+            if (!insideCut) {
+              const idx = (py * sw + px) * 4;
+              const alpha = imgData[idx + 3];
+              if (alpha > 16) {
+                rVals.push(imgData[idx]);
+                gVals.push(imgData[idx + 1]);
+                bVals.push(imgData[idx + 2]);
+              }
+            }
+          }
+        }
+
+        if (rVals.length === 0) return '#1E1826';
+
+        const medR = computeMedian(rVals);
+        const medG = computeMedian(gVals);
+        const medB = computeMedian(bVals);
+        return rgbToHex(medR, medG, medB);
+      }
+
+      /* =========================================================================
+       * REBUILD WORKING BASE CANVAS (PRISTINE BASE + ACTIVE HOLES)
+       * =========================================================================
+       * Because deleting a layer must restore the original pixels underneath,
+       * we recompute workingBaseCanvas from the pristine baseCanvas plus the
+       * hole fills of all currently existing layers.
+       */
+      function rebuildWorkingBaseCanvas() {
+        if (!state.hasImage) return;
+        const w = state.imageWidth;
+        const h = state.imageHeight;
+        state.workingBaseCanvas.width = w;
+        state.workingBaseCanvas.height = h;
+
+        const wCtx = state.workingBaseCanvas.getContext('2d');
+        wCtx.clearRect(0, 0, w, h);
+        wCtx.drawImage(state.baseCanvas, 0, 0);
+
+        // Fill each active layer's original cutRect with its sampled median border color
+        for (const layer of state.layers) {
+          const { x, y, w: cw, h: ch } = layer.cutRect;
+          wCtx.fillStyle = layer.fillColor;
+          wCtx.fillRect(x, y, cw, ch);
+        }
+      }
+
+      /* =========================================================================
+       * UNDO / REDO HISTORY STACK
+       * ========================================================================= */
+      function cloneLayersSnapshot(layers) {
+        return layers.map((l) => ({
+          id: l.id,
+          name: l.name,
+          cutRect: { ...l.cutRect },
+          x: l.x,
+          y: l.y,
+          w: l.w,
+          h: l.h,
+          fillColor: l.fillColor,
+          visible: l.visible,
+          patchDataUrl: l.patchDataUrl,
+          patchCanvas: l.patchCanvas
+        }));
+      }
+
+      function pushHistory() {
+        state.undoStack.push({
+          layers: cloneLayersSnapshot(state.layers),
+          selectedLayerId: state.selectedLayerId,
+          layerSeq: state.layerSeq
+        });
+        if (state.undoStack.length > state.maxHistory) {
+          state.undoStack.shift();
+        }
+        state.redoStack = [];
+        updateToolbarButtons();
+      }
+
+      function restoreSnapshot(snap) {
+        state.layers = cloneLayersSnapshot(snap.layers);
+        state.selectedLayerId = snap.selectedLayerId;
+        state.layerSeq = snap.layerSeq;
+        rebuildWorkingBaseCanvas();
+        renderLayersPanel();
+        updateToolbarButtons();
+        updateInspector();
+      }
+
+      function performUndo() {
+        if (state.undoStack.length === 0) return;
+        state.redoStack.push({
+          layers: cloneLayersSnapshot(state.layers),
+          selectedLayerId: state.selectedLayerId,
+          layerSeq: state.layerSeq
+        });
+        const prev = state.undoStack.pop();
+        restoreSnapshot(prev);
+        showToast('Undid last action');
+      }
+
+      function performRedo() {
+        if (state.redoStack.length === 0) return;
+        state.undoStack.push({
+          layers: cloneLayersSnapshot(state.layers),
+          selectedLayerId: state.selectedLayerId,
+          layerSeq: state.layerSeq
+        });
+        const next = state.redoStack.pop();
+        restoreSnapshot(next);
+        showToast('Redid action');
+      }
+
+      /* =========================================================================
+       * COORDINATE CONVERSIONS & VIEWPORT FIT
+       * ========================================================================= */
+      function screenToImage(screenX, screenY) {
+        return {
+          x: (screenX - state.panX) / state.zoom,
+          y: (screenY - state.panY) / state.zoom
+        };
+      }
+
+      function fitCanvasToViewport() {
+        if (!state.hasImage) return;
+        const rect = canvasStage.getBoundingClientRect();
+        const pad = 48;
+        const availW = Math.max(100, rect.width - pad * 2);
+        const availH = Math.max(100, rect.height - pad * 2);
+
+        const scaleX = availW / state.imageWidth;
+        const scaleY = availH / state.imageHeight;
+        state.zoom = clamp(Math.min(scaleX, scaleY, 1.5), 0.1, 8);
+
+        state.panX = Math.round((rect.width - state.imageWidth * state.zoom) / 2);
+        state.panY = Math.round((rect.height - state.imageHeight * state.zoom) / 2);
+        updateZoomHUD();
+      }
+
+      function zoomAtPoint(newZoom, centerX, centerY) {
+        if (!state.hasImage) return;
+        const clampedZoom = clamp(newZoom, 0.1, 8);
+        const imgPt = screenToImage(centerX, centerY);
+
+        state.zoom = clampedZoom;
+        state.panX = centerX - imgPt.x * state.zoom;
+        state.panY = centerY - imgPt.y * state.zoom;
+        updateZoomHUD();
+      }
+
+      function updateZoomHUD() {
+        zoomLabel.textContent = `${Math.round(state.zoom * 100)}%`;
+      }
+
+      /* =========================================================================
+       * IMAGE LOADING & BUILT-IN SAMPLE DASHBOARD GENERATOR
+       * ========================================================================= */
+      function loadScreenshotFromImageElement(img, label = 'Screenshot loaded') {
+        const w = img.naturalWidth || img.width;
+        const h = img.naturalHeight || img.height;
+        if (!w || !h) {
+          showToast('Invalid image dimensions');
+          return;
+        }
+
+        state.hasImage = true;
+        state.imageWidth = w;
+        state.imageHeight = h;
+
+        state.baseCanvas.width = w;
+        state.baseCanvas.height = h;
+        const bCtx = state.baseCanvas.getContext('2d');
+        bCtx.clearRect(0, 0, w, h);
+        bCtx.drawImage(img, 0, 0);
+
+        state.baseImageDataURL = state.baseCanvas.toDataURL('image/png');
+        state.layers = [];
+        state.selectedLayerId = null;
+        state.layerSeq = 1;
+        state.undoStack = [];
+        state.redoStack = [];
+
+        rebuildWorkingBaseCanvas();
+        emptyState.classList.add('hidden');
+        fitCanvasToViewport();
+        renderLayersPanel();
+        updateToolbarButtons();
+        updateInspector();
+        setMode('select');
+        statusText.textContent = `${label} (${w}×${h}px) — Drag a box to cut an element`;
+        showToast(label);
+      }
+
+      function loadScreenshotFromFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+          showToast('Please select a valid image file (PNG, JPG, WebP)');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => loadScreenshotFromImageElement(img, `Loaded ${file.name}`);
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Generates a crisp, realistic SaaS Analytics Dashboard screenshot on an offscreen canvas
+      // so users can immediately test cutting cards and rearranging layouts offline.
+      function generateSampleDashboardImage() {
+        const c = document.createElement('canvas');
+        const w = 1040;
+        const h = 660;
+        c.width = w;
+        c.height = h;
+        const g = c.getContext('2d');
+
+        // App Flat Background (#F4F5F8)
+        g.fillStyle = '#F3F1F8';
+        g.fillRect(0, 0, w, h);
+
+        // Left Sidebar (#231C30)
+        g.fillStyle = '#231C30';
+        g.fillRect(0, 0, 210, h);
+
+        // Sidebar Brand
+        g.fillStyle = '#E8873A';
+        g.beginPath();
+        g.roundRect(24, 24, 28, 28, 7);
+        g.fill();
+        g.fillStyle = '#EDE7F2';
+        g.font = 'bold 15px monospace';
+        g.fillText('PULSE.UI', 64, 43);
+
+        // Sidebar Nav Items
+        const navItems = ['Overview', 'Conversions', 'Retention', 'Cohort Map', 'Billing'];
+        navItems.forEach((item, idx) => {
+          const y = 92 + idx * 44;
+          if (idx === 0) {
+            g.fillStyle = '#362C47';
+            g.beginPath();
+            g.roundRect(14, y - 22, 182, 34, 8);
+            g.fill();
+            g.fillStyle = '#E8873A';
+          } else {
+            g.fillStyle = '#9B8FA8';
+          }
+          g.font = '13px monospace';
+          g.fillText(item, 32, y);
+        });
+
+        // Header Bar on light ground
+        g.fillStyle = '#231C30';
+        g.font = 'bold 20px monospace';
+        g.fillText('Product Telemetry Overview', 246, 48);
+        g.fillStyle = '#6E647B';
+        g.font = '12px monospace';
+        g.fillText('Try box-selecting any metric card below and dragging it to a new spot!', 246, 70);
+
+        // Primary CTA Button in Header
+        g.fillStyle = '#E8873A';
+        g.beginPath();
+        g.roundRect(868, 26, 140, 38, 10);
+        g.fill();
+        g.fillStyle = '#1E1826';
+        g.font = 'bold 12px monospace';
+        g.fillText('+ New Report', 892, 49);
+
+        // 3 Metric Cards Row (Flat background around them is #F3F1F8)
+        const cards = [
+          { x: 246, y: 100, w: 240, h: 136, title: 'ACTIVE USERS', val: '28,490', badge: '+14.2%', badgeCol: '#1B9E77', barCol: '#6C5CE7' },
+          { x: 506, y: 100, w: 240, h: 136, title: 'MRR REVENUE', val: '$142.8K', badge: '+8.7%', badgeCol: '#1B9E77', barCol: '#E8873A' },
+          { x: 766, y: 100, w: 242, h: 136, title: 'CHURN RATE', val: '1.84%', badge: '-0.4%', badgeCol: '#D95F02', barCol: '#E25C67' }
+        ];
+
+        cards.forEach((card) => {
+          g.fillStyle = '#FFFFFF';
+          g.beginPath();
+          g.roundRect(card.x, card.y, card.w, card.h, 14);
+          g.fill();
+          g.strokeStyle = '#E2DCEB';
+          g.lineWidth = 2;
+          g.stroke();
+
+          g.fillStyle = '#7C708A';
+          g.font = 'bold 11px monospace';
+          g.fillText(card.title, card.x + 20, card.y + 32);
+
+          g.fillStyle = '#1E1826';
+          g.font = 'bold 28px monospace';
+          g.fillText(card.val, card.x + 20, card.y + 72);
+
+          // Pill badge
+          g.fillStyle = card.badgeCol + '22';
+          g.beginPath();
+          g.roundRect(card.x + 162, card.y + 18, 58, 22, 6);
+          g.fill();
+          g.fillStyle = card.badgeCol;
+          g.font = 'bold 11px monospace';
+          g.fillText(card.badge, card.x + 170, card.y + 33);
+
+          // Mini progress bar
+          g.fillStyle = '#EFEBF5';
+          g.beginPath();
+          g.roundRect(card.x + 20, card.y + 102, card.w - 40, 10, 5);
+          g.fill();
+
+          g.fillStyle = card.barCol;
+          g.beginPath();
+          g.roundRect(card.x + 20, card.y + 102, (card.w - 40) * 0.68, 10, 5);
+          g.fill();
+        });
+
+        // Middle Row: Wide Chart Card + Right Activity Card
+        // Wide Chart Card
+        g.fillStyle = '#FFFFFF';
+        g.beginPath();
+        g.roundRect(246, 260, 498, 210, 14);
+        g.fill();
+        g.strokeStyle = '#E2DCEB';
+        g.lineWidth = 2;
+        g.stroke();
+
+        g.fillStyle = '#1E1826';
+        g.font = 'bold 14px monospace';
+        g.fillText('Weekly Signups Velocity', 268, 292);
+
+        // Bar chart columns inside card
+        const bars = [55, 80, 64, 105, 92, 130, 118, 142, 110, 148];
+        bars.forEach((bh, i) => {
+          const bx = 276 + i * 44;
+          const by = 442 - bh;
+          g.fillStyle = i === 9 ? '#E8873A' : '#7E68A8';
+          g.beginPath();
+          g.roundRect(bx, by, 26, bh, 5);
+          g.fill();
+        });
+
+        // Right Status Card
+        g.fillStyle = '#FFFFFF';
+        g.beginPath();
+        g.roundRect(766, 260, 242, 210, 14);
+        g.fill();
+        g.strokeStyle = '#E2DCEB';
+        g.lineWidth = 2;
+        g.stroke();
+
+        g.fillStyle = '#1E1826';
+        g.font = 'bold 14px monospace';
+        g.fillText('System Nodes', 786, 292);
+
+        const nodes = [
+          { label: 'US-East API', status: '99.98%', col: '#2ECC71' },
+          { label: 'EU-West Edge', status: '99.95%', col: '#2ECC71' },
+          { label: 'Worker Queue', status: '84.10%', col: '#E8873A' }
+        ];
+        nodes.forEach((n, idx) => {
+          const ny = 324 + idx * 44;
+          g.fillStyle = '#F7F5FA';
+          g.beginPath();
+          g.roundRect(784, ny, 206, 34, 8);
+          g.fill();
+
+          g.fillStyle = n.col;
+          g.beginPath();
+          g.arc(800, ny + 17, 5, 0, Math.PI * 2);
+          g.fill();
+
+          g.fillStyle = '#2A2233';
+          g.font = '12px monospace';
+          g.fillText(n.label, 814, ny + 21);
+
+          g.fillStyle = '#7C708A';
+          g.font = 'bold 11px monospace';
+          g.fillText(n.status, 936, ny + 21);
+        });
+
+        // Bottom Row: 2 Equal Action Banner Cards
+        const bottomCards = [
+          { x: 246, y: 492, w: 370, h: 132, tag: 'EXPERIMENT #12', title: 'Checkout One-Click Flow', desc: 'Conversion lift +6.4% across mobile' },
+          { x: 638, y: 492, w: 370, h: 132, tag: 'DEPLOY QUEUE', title: 'Design Tokens v3.2', desc: 'Ready to promote to production' }
+        ];
+
+        bottomCards.forEach((bc) => {
+          g.fillStyle = '#FFFFFF';
+          g.beginPath();
+          g.roundRect(bc.x, bc.y, bc.w, bc.h, 14);
+          g.fill();
+          g.strokeStyle = '#E2DCEB';
+          g.lineWidth = 2;
+          g.stroke();
+
+          g.fillStyle = '#E8873A';
+          g.font = 'bold 10px monospace';
+          g.fillText(bc.tag, bc.x + 22, bc.y + 32);
+
+          g.fillStyle = '#1E1826';
+          g.font = 'bold 16px monospace';
+          g.fillText(bc.title, bc.x + 22, bc.y + 62);
+
+          g.fillStyle = '#6E647B';
+          g.font = '12px monospace';
+          g.fillText(bc.desc, bc.x + 22, bc.y + 92);
+        });
+
+        const img = new Image();
+        img.onload = () => loadScreenshotFromImageElement(img, 'Sample Dashboard Loaded');
+        img.src = c.toDataURL('image/png');
+      }
+
+      /* =========================================================================
+       * CUTTING A REGION INTO A DRAGGABLE LAYER
+       * ========================================================================= */
+      function createCutoutFromBox(rawRect) {
+        if (!state.hasImage) return;
+
+        // Normalize & clamp rectangle to screenshot bounds
+        const x1 = clamp(Math.round(Math.min(rawRect.x1, rawRect.x2)), 0, state.imageWidth);
+        const y1 = clamp(Math.round(Math.min(rawRect.y1, rawRect.y2)), 0, state.imageHeight);
+        const x2 = clamp(Math.round(Math.max(rawRect.x1, rawRect.x2)), 0, state.imageWidth);
+        const y2 = clamp(Math.round(Math.max(rawRect.y1, rawRect.y2)), 0, state.imageHeight);
+
+        const w = x2 - x1;
+        const h = y2 - y1;
+
+        if (w < 6 || h < 6) {
+          statusText.textContent = 'Selection too small — drag a larger box around a UI element';
+          return;
+        }
+
+        pushHistory();
+
+        // Composite the current visual state (workingBase + visible layers) so cutting
+        // captures what is visibly inside the box, while sampling the background border color
+        const bCtx = state.baseCanvas.getContext('2d');
+        const fillColor = sampleMedianBorderColor(bCtx, state.imageWidth, state.imageHeight, { x: x1, y: y1, w, h });
+
+        // Extract pixels from pristine baseCanvas (or workingBaseCanvas)
+        const patchCanvas = document.createElement('canvas');
+        patchCanvas.width = w;
+        patchCanvas.height = h;
+        const pCtx = patchCanvas.getContext('2d');
+        pCtx.drawImage(state.baseCanvas, x1, y1, w, h, 0, 0, w, h);
+
+        const layerId = 'layer_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+        const newLayer = {
+          id: layerId,
+          name: `Cutout #${state.layerSeq++}`,
+          cutRect: { x: x1, y: y1, w, h },
+          x: x1,
+          y: y1,
+          w,
+          h,
+          fillColor,
+          visible: true,
+          patchDataUrl: patchCanvas.toDataURL('image/png'),
+          patchCanvas
+        };
+
+        state.layers.push(newLayer);
+        state.selectedLayerId = newLayer.id;
+
+        rebuildWorkingBaseCanvas();
+        renderLayersPanel();
+        updateToolbarButtons();
+        updateInspector();
+
+        // Automatically switch to Move mode or allow immediate dragging of cut layer
+        statusText.textContent = `Cut ${newLayer.name} (${w}×${h}px) • Filled hole with ${fillColor}`;
+        showToast(`Cut ${newLayer.name} — Drag to rearrange!`);
+      }
+
+      /* =========================================================================
+       * LAYER OPERATIONS (ORDER, DUPLICATE, VISIBILITY, DELETE)
+       * ========================================================================= */
+      function getSelectedLayer() {
+        return state.layers.find((l) => l.id === state.selectedLayerId) || null;
+      }
+
+      function bringLayerForward(layerId) {
+        const idx = state.layers.findIndex((l) => l.id === layerId);
+        if (idx === -1 || idx === state.layers.length - 1) return;
+        pushHistory();
+        const temp = state.layers[idx];
+        state.layers[idx] = state.layers[idx + 1];
+        state.layers[idx + 1] = temp;
+        renderLayersPanel();
+        updateToolbarButtons();
+      }
+
+      function sendLayerBackward(layerId) {
+        const idx = state.layers.findIndex((l) => l.id === layerId);
+        if (idx <= 0) return;
+        pushHistory();
+        const temp = state.layers[idx];
+        state.layers[idx] = state.layers[idx - 1];
+        state.layers[idx - 1] = temp;
+        renderLayersPanel();
+        updateToolbarButtons();
+      }
+
+      function duplicateLayer(layerId) {
+        const orig = state.layers.find((l) => l.id === layerId);
+        if (!orig) return;
+        pushHistory();
+
+        const dupCanvas = document.createElement('canvas');
+        dupCanvas.width = orig.w;
+        dupCanvas.height = orig.h;
+        dupCanvas.getContext('2d').drawImage(orig.patchCanvas, 0, 0);
+
+        const dup = {
+          id: 'layer_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          name: `${orig.name} Copy`,
+          cutRect: { ...orig.cutRect },
+          x: clamp(orig.x + 16, 0, state.imageWidth - orig.w),
+          y: clamp(orig.y + 16, 0, state.imageHeight - orig.h),
+          w: orig.w,
+          h: orig.h,
+          fillColor: orig.fillColor,
+          visible: true,
+          patchDataUrl: orig.patchDataUrl,
+          patchCanvas: dupCanvas
+        };
+
+        state.layers.push(dup);
+        state.selectedLayerId = dup.id;
+        renderLayersPanel();
+        updateToolbarButtons();
+        updateInspector();
+        showToast(`Duplicated ${orig.name}`);
+      }
+
+      function toggleLayerVisibility(layerId) {
+        const layer = state.layers.find((l) => l.id === layerId);
+        if (!layer) return;
+        pushHistory();
+        layer.visible = !layer.visible;
+        renderLayersPanel();
+        updateInspector();
+      }
+
+      function deleteLayer(layerId) {
+        const idx = state.layers.findIndex((l) => l.id === layerId);
+        if (idx === -1) return;
+        const removedName = state.layers[idx].name;
+        pushHistory();
+        state.layers.splice(idx, 1);
+        if (state.selectedLayerId === layerId) {
+          state.selectedLayerId = state.layers.length ? state.layers[state.layers.length - 1].id : null;
+        }
+        // Rebuilding workingBaseCanvas automatically restores the original pixels underneath!
+        rebuildWorkingBaseCanvas();
+        renderLayersPanel();
+        updateToolbarButtons();
+        updateInspector();
+        showToast(`Deleted ${removedName} & restored original pixels`);
+      }
+
+      /* =========================================================================
+       * SIDEBAR & TOOLBAR UI RENDERING
+       * ========================================================================= */
+      function setMode(newMode) {
+        state.mode = newMode;
+        modeSelectBtn.classList.toggle('active', newMode === 'select');
+        modeMoveBtn.classList.toggle('active', newMode === 'move');
+        modePanBtn.classList.toggle('active', newMode === 'pan');
+        updateCursor();
+      }
+
+      function updateToolbarButtons() {
+        undoBtn.disabled = state.undoStack.length === 0;
+        redoBtn.disabled = state.redoStack.length === 0;
+        saveProjectBtn.disabled = !state.hasImage;
+        exportPngBtn.disabled = !state.hasImage;
+        layerCountBadge.textContent = `${state.layers.length} ${state.layers.length === 1 ? 'cut' : 'cuts'}`;
+      }
+
+      function updateInspector() {
+        const sel = getSelectedLayer();
+        if (!sel) {
+          selectedLayerLabel.textContent = state.hasImage ? 'Base screenshot active' : 'No cutout selected';
+          holeFillSwatch.style.background = '#2A2233';
+          holeFillHex.textContent = 'Auto Fill';
+          touchNudgePad.classList.remove('visible');
+          return;
+        }
+        selectedLayerLabel.textContent = `${sel.name} (${Math.round(sel.x)}, ${Math.round(sel.y)})`;
+        holeFillSwatch.style.background = sel.fillColor;
+        holeFillHex.textContent = sel.fillColor;
+        touchNudgePad.classList.add('visible');
+      }
+
+      function renderLayersPanel() {
+        layersList.innerHTML = '';
+
+        if (!state.hasImage) {
+          const emptyMsg = document.createElement('div');
+          emptyMsg.style.cssText = 'padding: 24px 12px; text-align: center; color: var(--text-dim); font-size: 12px;';
+          emptyMsg.textContent = 'Cut regions will appear here as draggable layers above the base screenshot.';
+          layersList.appendChild(emptyMsg);
+          return;
+        }
+
+        // Render layers from top-most (end of array) to bottom-most (index 0)
+        for (let i = state.layers.length - 1; i >= 0; i--) {
+          const layer = state.layers[i];
+          const isSelected = layer.id === state.selectedLayerId;
+          const isTop = i === state.layers.length - 1;
+          const isBottom = i === 0;
+
+          const card = document.createElement('div');
+          card.className = `layer-card${isSelected ? ' selected' : ''}${!layer.visible ? ' hidden-layer' : ''}`;
+          card.addEventListener('click', () => {
+            state.selectedLayerId = layer.id;
+            renderLayersPanel();
+            updateInspector();
+          });
+
+          const thumbWrap = document.createElement('div');
+          thumbWrap.className = 'layer-thumb-wrap';
+          const thumbImg = document.createElement('img');
+          thumbImg.src = layer.patchDataUrl;
+          thumbImg.alt = layer.name;
+          thumbWrap.appendChild(thumbImg);
+
+          const info = document.createElement('div');
+          info.className = 'layer-info';
+          info.innerHTML = `
+            <div class="layer-name">${layer.name}</div>
+            <div class="layer-meta">
+              <span>${layer.w}×${layer.h}</span>
+              <span>•</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;">
+                <span style="width:8px;height:8px;border-radius:2px;background:${layer.fillColor};display:inline-block;border:1px solid rgba(255,255,255,0.25);"></span>
+                ${layer.fillColor}
+              </span>
+            </div>
+          `;
+
+          const actions = document.createElement('div');
+          actions.className = 'layer-actions';
+
+          // Bring Forward
+          const upBtn = document.createElement('button');
+          upBtn.className = 'layer-btn';
+          upBtn.disabled = isTop;
+          upBtn.title = 'Bring Forward';
+          upBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>`;
+          upBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            bringLayerForward(layer.id);
+          });
+
+          // Send Backward
+          const downBtn = document.createElement('button');
+          downBtn.className = 'layer-btn';
+          downBtn.disabled = isBottom;
+          downBtn.title = 'Send Backward';
+          downBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`;
+          downBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sendLayerBackward(layer.id);
+          });
+
+          // Duplicate
+          const dupBtn = document.createElement('button');
+          dupBtn.className = 'layer-btn';
+          dupBtn.title = 'Duplicate Cutout';
+          dupBtn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+          dupBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            duplicateLayer(layer.id);
+          });
+
+          // Toggle Visibility
+          const visBtn = document.createElement('button');
+          visBtn.className = 'layer-btn';
+          visBtn.title = layer.visible ? 'Hide Layer' : 'Show Layer';
+          visBtn.innerHTML = layer.visible
+            ? `<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+            : `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+          visBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleLayerVisibility(layer.id);
+          });
+
+          // Delete (restores hole)
+          const delBtn = document.createElement('button');
+          delBtn.className = 'layer-btn delete-btn';
+          delBtn.title = 'Delete Layer & Restore Original Pixels Underneath';
+          delBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteLayer(layer.id);
+          });
+
+          actions.append(upBtn, downBtn, dupBtn, visBtn, delBtn);
+          card.append(thumbWrap, info, actions);
+          layersList.appendChild(card);
+        }
+
+        // Base Screenshot Layer (Always at the bottom, locked)
+        const baseCard = document.createElement('div');
+        baseCard.className = 'layer-card base-layer';
+        const baseThumb = document.createElement('div');
+        baseThumb.className = 'layer-thumb-wrap';
+        const baseImg = document.createElement('img');
+        baseImg.src = state.baseImageDataURL;
+        baseImg.alt = 'Base Screenshot';
+        baseThumb.appendChild(baseImg);
+
+        const baseInfo = document.createElement('div');
+        baseInfo.className = 'layer-info';
+        baseInfo.innerHTML = `
+          <div class="layer-name">Base Screenshot</div>
+          <div class="layer-meta">${state.imageWidth}×${state.imageHeight}px • Locked bottom</div>
+        `;
+
+        const lockIcon = document.createElement('div');
+        lockIcon.style.cssText = 'color: var(--text-dim); padding: 0 6px;';
+        lockIcon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+
+        baseCard.append(baseThumb, baseInfo, lockIcon);
+        layersList.appendChild(baseCard);
+      }
+
+      /* =========================================================================
+       * MAIN VIEWPORT CANVAS RENDER LOOP (WITH MARCHING ANTS)
+       * ========================================================================= */
+      function resizeViewportCanvas() {
+        const rect = canvasStage.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        if (viewportCanvas.width !== Math.floor(rect.width * dpr) ||
+            viewportCanvas.height !== Math.floor(rect.height * dpr)) {
+          viewportCanvas.width = Math.floor(rect.width * dpr);
+          viewportCanvas.height = Math.floor(rect.height * dpr);
+        }
+      }
+
+      function renderViewport() {
+        resizeViewportCanvas();
+        const dpr = window.devicePixelRatio || 1;
+        ctx.save();
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const viewW = viewportCanvas.width / dpr;
+        const viewH = viewportCanvas.height / dpr;
+        ctx.clearRect(0, 0, viewW, viewH);
+
+        if (state.hasImage) {
+          ctx.save();
+          ctx.translate(state.panX, state.panY);
+          ctx.scale(state.zoom, state.zoom);
+
+          // Crisp pixel art / UI rendering when zoomed in
+          ctx.imageSmoothingEnabled = state.zoom < 1.5;
+
+          // Subtle drop shadow behind screenshot
+          ctx.save();
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+          ctx.shadowBlur = 28 / state.zoom;
+          ctx.shadowOffsetY = 8 / state.zoom;
+          ctx.fillStyle = '#1E1826';
+          ctx.fillRect(0, 0, state.imageWidth, state.imageHeight);
+          ctx.restore();
+
+          // 1. Draw Working Base Screenshot (with median-filled holes)
+          ctx.drawImage(state.workingBaseCanvas, 0, 0);
+
+          // 2. Draw Cutout Layers in stack order
+          for (const layer of state.layers) {
+            if (!layer.visible) continue;
+            const isSelected = layer.id === state.selectedLayerId;
+            const isBeingDragged = state.isDraggingLayer && state.dragLayerId === layer.id;
+
+            ctx.save();
+            if (isBeingDragged) {
+              ctx.shadowColor = 'rgba(10, 7, 15, 0.45)';
+              ctx.shadowBlur = 16 / state.zoom;
+              ctx.shadowOffsetY = 5 / state.zoom;
+            }
+            ctx.drawImage(layer.patchCanvas, Math.round(layer.x), Math.round(layer.y));
+            ctx.restore();
+
+            // Highlight outline for currently selected layer
+            if (isSelected) {
+              ctx.save();
+              ctx.strokeStyle = '#E8873A';
+              ctx.lineWidth = 2 / state.zoom;
+              ctx.strokeRect(
+                Math.round(layer.x) - 0.5 / state.zoom,
+                Math.round(layer.y) - 0.5 / state.zoom,
+                layer.w + 1 / state.zoom,
+                layer.h + 1 / state.zoom
+              );
+
+              // Corner pixel accents
+              const cSize = 6 / state.zoom;
+              ctx.fillStyle = '#E8873A';
+              const lx = Math.round(layer.x);
+              const ly = Math.round(layer.y);
+              ctx.fillRect(lx - cSize / 2, ly - cSize / 2, cSize, cSize);
+              ctx.fillRect(lx + layer.w - cSize / 2, ly - cSize / 2, cSize, cSize);
+              ctx.fillRect(lx - cSize / 2, ly + layer.h - cSize / 2, cSize, cSize);
+              ctx.fillRect(lx + layer.w - cSize / 2, ly + layer.h - cSize / 2, cSize, cSize);
+              ctx.restore();
+            }
+          }
+
+          // 3. Draw Marching-Ants Selection Box while dragging in Select Mode
+          if (state.isSelectingBox) {
+            const x = Math.min(state.selectStartImg.x, state.selectCurrentImg.x);
+            const y = Math.min(state.selectStartImg.y, state.selectCurrentImg.y);
+            const w = Math.abs(state.selectCurrentImg.x - state.selectStartImg.x);
+            const h = Math.abs(state.selectCurrentImg.y - state.selectStartImg.y);
+
+            ctx.save();
+            ctx.fillStyle = 'rgba(232, 135, 58, 0.14)';
+            ctx.fillRect(x, y, w, h);
+
+            const lw = 1.5 / state.zoom;
+            const dash = 6 / state.zoom;
+            ctx.lineWidth = lw;
+
+            // Dark base stroke
+            ctx.strokeStyle = '#1E1826';
+            ctx.setLineDash([]);
+            ctx.strokeRect(x, y, w, h);
+
+            // Animated warm-amber / near-white marching ants
+            ctx.strokeStyle = '#EDE7F2';
+            ctx.setLineDash([dash, dash]);
+            ctx.lineDashOffset = -state.antsOffset / state.zoom;
+            ctx.strokeRect(x, y, w, h);
+
+            ctx.strokeStyle = '#E8873A';
+            ctx.lineDashOffset = (-state.antsOffset + 6) / state.zoom;
+            ctx.strokeRect(x, y, w, h);
+
+            // Dimensions pill label
+            if (w > 12 && h > 12) {
+              const dimText = `${Math.round(w)} × ${Math.round(h)}`;
+              ctx.font = `bold ${Math.max(10, Math.round(11 / state.zoom))}px "Space Mono", monospace`;
+              const padX = 6 / state.zoom;
+              const pillW = ctx.measureText(dimText).width + padX * 2;
+              const pillH = 20 / state.zoom;
+              const pillX = x;
+              const pillY = Math.max(0, y - pillH - 4 / state.zoom);
+
+              ctx.fillStyle = '#2A2233';
+              ctx.fillRect(pillX, pillY, pillW, pillH);
+              ctx.strokeStyle = '#E8873A';
+              ctx.setLineDash([]);
+              ctx.strokeRect(pillX, pillY, pillW, pillH);
+
+              ctx.fillStyle = '#EDE7F2';
+              ctx.fillText(dimText, pillX + padX, pillY + pillH * 0.72);
+            }
+            ctx.restore();
+          }
+
+          ctx.restore();
+        }
+
+        ctx.restore();
+        state.antsOffset = (state.antsOffset + 0.35) % 12;
+        requestAnimationFrame(renderViewport);
+      }
+
+      /* =========================================================================
+       * HIT TESTING & POINTER / TOUCH INTERACTION
+       * ========================================================================= */
+      function hitTestTopLayer(imgX, imgY) {
+        for (let i = state.layers.length - 1; i >= 0; i--) {
+          const l = state.layers[i];
+          if (!l.visible) continue;
+          if (imgX >= l.x && imgX <= l.x + l.w && imgY >= l.y && imgY <= l.y + l.h) {
+            return l;
+          }
+        }
+        return null;
+      }
+
+      function updateCursor(hoverImgPt) {
+        if (state.isPanning || state.isSpaceDown || state.mode === 'pan') {
+          canvasStage.style.cursor = state.isPanning ? 'grabbing' : 'grab';
+          return;
+        }
+        if (state.isDraggingLayer) {
+          canvasStage.style.cursor = 'move';
+          return;
+        }
+        if (state.mode === 'move') {
+          if (hoverImgPt && hitTestTopLayer(hoverImgPt.x, hoverImgPt.y)) {
+            canvasStage.style.cursor = 'move';
+          } else {
+            canvasStage.style.cursor = 'default';
+          }
+        } else {
+          // In select mode, hovering an already-selected cutout also allows quick drag
+          if (hoverImgPt) {
+            const hit = hitTestTopLayer(hoverImgPt.x, hoverImgPt.y);
+            if (hit && hit.id === state.selectedLayerId) {
+              canvasStage.style.cursor = 'move';
+              return;
+            }
+          }
+          canvasStage.style.cursor = 'crosshair';
+        }
+      }
+
+      function getStageRelativeCoords(clientX, clientY) {
+        const rect = canvasStage.getBoundingClientRect();
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top
+        };
+      }
+
+      // Mouse Down
+      canvasStage.addEventListener('mousedown', (e) => {
+        if (!state.hasImage) return;
+        if (e.target.closest('.empty-state') || e.target.closest('.canvas-hud')) return;
+
+        const screenPt = getStageRelativeCoords(e.clientX, e.clientY);
+        const imgPt = screenToImage(screenPt.x, screenPt.y);
+
+        // Middle mouse button, Spacebar + Left click, or Pan mode => Pan
+        if (e.button === 1 || (e.button === 0 && (state.isSpaceDown || state.mode === 'pan'))) {
+          e.preventDefault();
+          state.isPanning = true;
+          state.panStartScreenX = screenPt.x;
+          state.panStartScreenY = screenPt.y;
+          state.panOriginX = state.panX;
+          state.panOriginY = state.panY;
+          updateCursor();
+          return;
+        }
+
+        if (e.button !== 0) return;
+
+        const hitLayer = hitTestTopLayer(imgPt.x, imgPt.y);
+
+        // If in Move mode (or clicking directly on the currently selected layer), drag the layer
+        if (state.mode === 'move' || (hitLayer && hitLayer.id === state.selectedLayerId)) {
+          if (hitLayer) {
+            pushHistory();
+            state.selectedLayerId = hitLayer.id;
+            state.isDraggingLayer = true;
+            state.dragLayerId = hitLayer.id;
+            state.dragStartImg = { x: imgPt.x, y: imgPt.y };
+            state.dragLayerOrigin = { x: hitLayer.x, y: hitLayer.y };
+            renderLayersPanel();
+            updateInspector();
+            updateCursor();
+          } else {
+            state.selectedLayerId = null;
+            renderLayersPanel();
+            updateInspector();
+          }
+          return;
+        }
+
+        // Otherwise in Select mode: start drawing a marching-ants cut box
+        state.isSelectingBox = true;
+        state.selectStartImg = {
+          x: clamp(imgPt.x, 0, state.imageWidth),
+          y: clamp(imgPt.y, 0, state.imageHeight)
+        };
+        state.selectCurrentImg = { ...state.selectStartImg };
+      });
+
+      // Mouse Move
+      window.addEventListener('mousemove', (e) => {
+        if (!state.hasImage) return;
+        const screenPt = getStageRelativeCoords(e.clientX, e.clientY);
+        const imgPt = screenToImage(screenPt.x, screenPt.y);
+
+        if (imgPt.x >= 0 && imgPt.x <= state.imageWidth && imgPt.y >= 0 && imgPt.y <= state.imageHeight) {
+          coordsText.textContent = `${Math.round(imgPt.x)}, ${Math.round(imgPt.y)}px`;
+        } else {
+          coordsText.textContent = '';
+        }
+
+        if (state.isPanning) {
+          state.panX = state.panOriginX + (screenPt.x - state.panStartScreenX);
+          state.panY = state.panOriginY + (screenPt.y - state.panStartScreenY);
+          return;
+        }
+
+        if (state.isDraggingLayer) {
+          const layer = state.layers.find((l) => l.id === state.dragLayerId);
+          if (layer) {
+            const dx = imgPt.x - state.dragStartImg.x;
+            const dy = imgPt.y - state.dragStartImg.y;
+            layer.x = Math.round(state.dragLayerOrigin.x + dx);
+            layer.y = Math.round(state.dragLayerOrigin.y + dy);
+            updateInspector();
+          }
+          return;
+        }
+
+        if (state.isSelectingBox) {
+          state.selectCurrentImg = {
+            x: clamp(imgPt.x, 0, state.imageWidth),
+            y: clamp(imgPt.y, 0, state.imageHeight)
+          };
+          return;
+        }
+
+        updateCursor(imgPt);
+      });
+
+      // Mouse Up
+      window.addEventListener('mouseup', () => {
+        if (state.isPanning) {
+          state.isPanning = false;
+          updateCursor();
+        }
+
+        if (state.isDraggingLayer) {
+          const layer = state.layers.find((l) => l.id === state.dragLayerId);
+          // If the user clicked without actually moving the layer, pop the redundant history snapshot
+          if (layer && layer.x === state.dragLayerOrigin.x && layer.y === state.dragLayerOrigin.y) {
+            state.undoStack.pop();
+            updateToolbarButtons();
+          }
+          state.isDraggingLayer = false;
+          state.dragLayerId = null;
+          updateCursor();
+        }
+
+        if (state.isSelectingBox) {
+          state.isSelectingBox = false;
+          createCutoutFromBox({
+            x1: state.selectStartImg.x,
+            y1: state.selectStartImg.y,
+            x2: state.selectCurrentImg.x,
+            y2: state.selectCurrentImg.y
+          });
+        }
+      });
+
+      // Wheel Zoom (centered at cursor)
+      canvasStage.addEventListener('wheel', (e) => {
+        if (!state.hasImage) return;
+        e.preventDefault();
+        const screenPt = getStageRelativeCoords(e.clientX, e.clientY);
+        const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+        zoomAtPoint(state.zoom * factor, screenPt.x, screenPt.y);
+      }, { passive: false });
+
+      /* =========================================================================
+       * TOUCH SUPPORT (1-FINGER CUT/DRAG/PAN + 2-FINGER PINCH ZOOM & PAN)
+       * ========================================================================= */
+      function getTouchDistance(t1, t2) {
+        const dx = t2.clientX - t1.clientX;
+        const dy = t2.clientY - t1.clientY;
+        return Math.hypot(dx, dy);
+      }
+
+      function getTouchMidpoint(t1, t2) {
+        return getStageRelativeCoords(
+          (t1.clientX + t2.clientX) / 2,
+          (t1.clientY + t2.clientY) / 2
+        );
+      }
+
+      canvasStage.addEventListener('touchstart', (e) => {
+        if (!state.hasImage) return;
+        if (e.target.closest('.empty-state') || e.target.closest('.canvas-hud')) return;
+        e.preventDefault();
+
+        // Two-finger gesture => Pinch-to-Zoom + Two-Finger Pan
+        if (e.touches.length === 2) {
+          state.isSelectingBox = false;
+          state.isDraggingLayer = false;
+          state.isPanning = false;
+          state.isPinching = true;
+
+          const dist = getTouchDistance(e.touches[0], e.touches[1]);
+          const midScreen = getTouchMidpoint(e.touches[0], e.touches[1]);
+          state.pinchStartDist = Math.max(10, dist);
+          state.pinchStartZoom = state.zoom;
+          state.pinchCenterImg = screenToImage(midScreen.x, midScreen.y);
+          return;
+        }
+
+        if (e.touches.length !== 1) return;
+
+        const touch = e.touches[0];
+        const screenPt = getStageRelativeCoords(touch.clientX, touch.clientY);
+        const imgPt = screenToImage(screenPt.x, screenPt.y);
+
+        // Dedicated Pan mode
+        if (state.mode === 'pan') {
+          state.isPanning = true;
+          state.panStartScreenX = screenPt.x;
+          state.panStartScreenY = screenPt.y;
+          state.panOriginX = state.panX;
+          state.panOriginY = state.panY;
+          return;
+        }
+
+        const hitLayer = hitTestTopLayer(imgPt.x, imgPt.y);
+
+        // If user is in Move mode OR taps directly on an existing cutout layer, drag it
+        if (state.mode === 'move' || (hitLayer && hitLayer.id === state.selectedLayerId)) {
+          if (hitLayer) {
+            pushHistory();
+            state.selectedLayerId = hitLayer.id;
+            state.isDraggingLayer = true;
+            state.dragLayerId = hitLayer.id;
+            state.dragStartImg = { x: imgPt.x, y: imgPt.y };
+            state.dragLayerOrigin = { x: hitLayer.x, y: hitLayer.y };
+            renderLayersPanel();
+            updateInspector();
+          } else {
+            // In Move mode, dragging empty background pans the viewport smoothly on mobile
+            state.selectedLayerId = null;
+            renderLayersPanel();
+            updateInspector();
+            state.isPanning = true;
+            state.panStartScreenX = screenPt.x;
+            state.panStartScreenY = screenPt.y;
+            state.panOriginX = state.panX;
+            state.panOriginY = state.panY;
+          }
+          return;
+        }
+
+        // In Select (Cut) mode: draw selection box
+        state.isSelectingBox = true;
+        state.selectStartImg = {
+          x: clamp(imgPt.x, 0, state.imageWidth),
+          y: clamp(imgPt.y, 0, state.imageHeight)
+        };
+        state.selectCurrentImg = { ...state.selectStartImg };
+      }, { passive: false });
+
+      canvasStage.addEventListener('touchmove', (e) => {
+        if (!state.hasImage) return;
+        e.preventDefault();
+
+        if (state.isPinching && e.touches.length === 2) {
+          const dist = getTouchDistance(e.touches[0], e.touches[1]);
+          const midScreen = getTouchMidpoint(e.touches[0], e.touches[1]);
+          const scale = dist / state.pinchStartDist;
+          state.zoom = clamp(state.pinchStartZoom * scale, 0.1, 8);
+          state.panX = midScreen.x - state.pinchCenterImg.x * state.zoom;
+          state.panY = midScreen.y - state.pinchCenterImg.y * state.zoom;
+          updateZoomHUD();
+          return;
+        }
+
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        const screenPt = getStageRelativeCoords(touch.clientX, touch.clientY);
+        const imgPt = screenToImage(screenPt.x, screenPt.y);
+
+        if (state.isDraggingLayer) {
+          const layer = state.layers.find((l) => l.id === state.dragLayerId);
+          if (layer) {
+            layer.x = Math.round(state.dragLayerOrigin.x + (imgPt.x - state.dragStartImg.x));
+            layer.y = Math.round(state.dragLayerOrigin.y + (imgPt.y - state.dragStartImg.y));
+            updateInspector();
+          }
+        } else if (state.isSelectingBox) {
+          state.selectCurrentImg = {
+            x: clamp(imgPt.x, 0, state.imageWidth),
+            y: clamp(imgPt.y, 0, state.imageHeight)
+          };
+        } else if (state.isPanning) {
+          state.panX = state.panOriginX + (screenPt.x - state.panStartScreenX);
+          state.panY = state.panOriginY + (screenPt.y - state.panStartScreenY);
+        }
+      }, { passive: false });
+
+      canvasStage.addEventListener('touchend', (e) => {
+        if (state.isPinching && e.touches.length < 2) {
+          state.isPinching = false;
+        }
+        if (state.isDraggingLayer) {
+          const layer = state.layers.find((l) => l.id === state.dragLayerId);
+          if (layer && layer.x === state.dragLayerOrigin.x && layer.y === state.dragLayerOrigin.y) {
+            state.undoStack.pop();
+            updateToolbarButtons();
+          }
+          state.isDraggingLayer = false;
+          state.dragLayerId = null;
+        }
+        if (state.isSelectingBox) {
+          state.isSelectingBox = false;
+          createCutoutFromBox({
+            x1: state.selectStartImg.x,
+            y1: state.selectStartImg.y,
+            x2: state.selectCurrentImg.x,
+            y2: state.selectCurrentImg.y
+          });
+        }
+        if (e.touches.length === 0) {
+          state.isPanning = false;
+        }
+      });
+
+      /* =========================================================================
+       * KEYBOARD SHORTCUTS (SPACE PAN, NUDGE, UNDO/REDO, DELETE, MODES)
+       * ========================================================================= */
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        // Spacebar for Panning
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (!state.isSpaceDown) {
+            state.isSpaceDown = true;
+            updateCursor();
+          }
+          return;
+        }
+
+        // Undo / Redo (Ctrl+Z / Ctrl+Shift+Z / Ctrl+Y)
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+          e.preventDefault();
+          if (e.shiftKey) {
+            performRedo();
+          } else {
+            performUndo();
+          }
+          return;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+          e.preventDefault();
+          performRedo();
+          return;
+        }
+
+        // Delete / Backspace removes selected cutout & restores hole underneath
+        if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedLayerId) {
+          e.preventDefault();
+          deleteLayer(state.selectedLayerId);
+          return;
+        }
+
+        // Arrow Keys Nudge (1px, or 10px with Shift)
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+          const sel = getSelectedLayer();
+          if (!sel) return;
+          e.preventDefault();
+          pushHistory();
+          const step = e.shiftKey ? 10 : 1;
+          if (e.key === 'ArrowLeft') sel.x -= step;
+          if (e.key === 'ArrowRight') sel.x += step;
+          if (e.key === 'ArrowUp') sel.y -= step;
+          if (e.key === 'ArrowDown') sel.y += step;
+          updateInspector();
+          return;
+        }
+
+        // Zoom shortcuts (+, -, 0)
+        if (!e.ctrlKey && !e.metaKey && (e.key === '=' || e.key === '+')) {
+          const rect = canvasStage.getBoundingClientRect();
+          zoomAtPoint(state.zoom * 1.25, rect.width / 2, rect.height / 2);
+          return;
+        }
+        if (!e.ctrlKey && !e.metaKey && e.key === '-') {
+          const rect = canvasStage.getBoundingClientRect();
+          zoomAtPoint(state.zoom / 1.25, rect.width / 2, rect.height / 2);
+          return;
+        }
+        if (!e.ctrlKey && !e.metaKey && e.key === '0') {
+          fitCanvasToViewport();
+          return;
+        }
+
+        // Mode toggles (S = Select/Cut, V = Move, H = Pan)
+        if (!e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 's') {
+          setMode('select');
+          return;
+        }
+        if (!e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'v') {
+          setMode('move');
+          return;
+        }
+        if (!e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'h') {
+          setMode('pan');
+          return;
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        if (e.code === 'Space') {
+          state.isSpaceDown = false;
+          updateCursor();
+        }
+      });
+
+      /* =========================================================================
+       * EXPORT FULL-RESOLUTION PNG & PROJECT JSON SAVE / LOAD
+       * ========================================================================= */
+      function exportRemixedPNG() {
+        if (!state.hasImage) return;
+
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = state.imageWidth;
+        outCanvas.height = state.imageHeight;
+        const outCtx = outCanvas.getContext('2d');
+
+        // 1. Draw working base (original screenshot with all cut holes cleanly filled)
+        outCtx.drawImage(state.workingBaseCanvas, 0, 0);
+
+        // 2. Composite all visible cutout layers at full original resolution
+        for (const layer of state.layers) {
+          if (!layer.visible) continue;
+          outCtx.drawImage(layer.patchCanvas, Math.round(layer.x), Math.round(layer.y));
+        }
+
+        const dataUrl = outCanvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `layout-remix-${Date.now()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        showToast(`Exported ${state.imageWidth}×${state.imageHeight}px PNG`);
+      }
+
+      function saveProjectJSON() {
+        if (!state.hasImage) return;
+
+        const payload = {
+          app: 'Layout Remix',
+          version: 1,
+          savedAt: new Date().toISOString(),
+          imageWidth: state.imageWidth,
+          imageHeight: state.imageHeight,
+          baseImageDataURL: state.baseImageDataURL,
+          layerSeq: state.layerSeq,
+          layers: state.layers.map((l) => ({
+            id: l.id,
+            name: l.name,
+            cutRect: l.cutRect,
+            x: l.x,
+            y: l.y,
+            w: l.w,
+            h: l.h,
+            fillColor: l.fillColor,
+            visible: l.visible,
+            patchDataUrl: l.patchDataUrl
+          }))
+        };
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `layout-remix-project-${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+        showToast('Saved editable project JSON');
+      }
+
+      function loadProjectFromJSONFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!data.baseImageDataURL || !Array.isArray(data.layers)) {
+              throw new Error('Invalid Layout Remix project format');
+            }
+
+            const baseImg = new Image();
+            baseImg.onload = () => {
+              state.hasImage = true;
+              state.imageWidth = baseImg.naturalWidth || data.imageWidth;
+              state.imageHeight = baseImg.naturalHeight || data.imageHeight;
+              state.baseImageDataURL = data.baseImageDataURL;
+              state.layerSeq = data.layerSeq || data.layers.length + 1;
+
+              state.baseCanvas.width = state.imageWidth;
+              state.baseCanvas.height = state.imageHeight;
+              state.baseCanvas.getContext('2d').drawImage(baseImg, 0, 0);
+
+              // Reconstruct each layer's patchCanvas
+              const loadPromises = data.layers.map((savedLayer) => {
+                return new Promise((resolve) => {
+                  const pImg = new Image();
+                  pImg.onload = () => {
+                    const pc = document.createElement('canvas');
+                    pc.width = savedLayer.w;
+                    pc.height = savedLayer.h;
+                    pc.getContext('2d').drawImage(pImg, 0, 0);
+                    resolve({
+                      id: savedLayer.id,
+                      name: savedLayer.name,
+                      cutRect: { ...savedLayer.cutRect },
+                      x: savedLayer.x,
+                      y: savedLayer.y,
+                      w: savedLayer.w,
+                      h: savedLayer.h,
+                      fillColor: savedLayer.fillColor || '#1E1826',
+                      visible: savedLayer.visible !== false,
+                      patchDataUrl: savedLayer.patchDataUrl,
+                      patchCanvas: pc
+                    });
+                  };
+                  pImg.src = savedLayer.patchDataUrl;
+                });
+              });
+
+              Promise.all(loadPromises).then((rebuiltLayers) => {
+                state.layers = rebuiltLayers;
+                state.selectedLayerId = rebuiltLayers.length ? rebuiltLayers[rebuiltLayers.length - 1].id : null;
+                state.undoStack = [];
+                state.redoStack = [];
+
+                rebuildWorkingBaseCanvas();
+                emptyState.classList.add('hidden');
+                fitCanvasToViewport();
+                renderLayersPanel();
+                updateToolbarButtons();
+                updateInspector();
+                showToast(`Restored project (${rebuiltLayers.length} layers)`);
+              });
+            };
+            baseImg.src = data.baseImageDataURL;
+          } catch (err) {
+            showToast('Could not parse project JSON file');
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      /* =========================================================================
+       * DRAG & DROP + CLIPBOARD PASTE + BUTTON LISTENERS
+       * ========================================================================= */
+      window.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        canvasStage.classList.add('drag-over');
+      });
+
+      window.addEventListener('dragleave', (e) => {
+        if (e.relatedTarget === null) {
+          canvasStage.classList.remove('drag-over');
+        }
+      });
+
+      window.addEventListener('drop', (e) => {
+        e.preventDefault();
+        canvasStage.classList.remove('drag-over');
+        const files = e.dataTransfer?.files;
+        if (!files || !files.length) return;
+        const file = files[0];
+        if (file.name.endsWith('.json') || file.type === 'application/json') {
+          loadProjectFromJSONFile(file);
+        } else {
+          loadScreenshotFromFile(file);
+        }
+      });
+
+      window.addEventListener('paste', (e) => {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        for (const item of items) {
+          if (item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) {
+              loadScreenshotFromFile(file);
+              break;
+            }
+          }
+        }
+      });
+
+      // Button Events
+      modeSelectBtn.addEventListener('click', () => setMode('select'));
+      modeMoveBtn.addEventListener('click', () => setMode('move'));
+      modePanBtn.addEventListener('click', () => setMode('pan'));
+      undoBtn.addEventListener('click', performUndo);
+      redoBtn.addEventListener('click', performRedo);
+
+      // Mobile Bottom Sheet Collapse/Expand Toggle
+      sidebarHeaderToggle.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+          const isCollapsed = sidebarPanel.classList.toggle('collapsed');
+          mobileSheetToggleHint.textContent = isCollapsed ? '▴' : '▾';
+          setTimeout(() => {
+            resizeViewportCanvas();
+          }, 260);
+        }
+      });
+
+      // On-Screen Touch Nudge D-Pad Controls
+      nudgeStepBtn.addEventListener('click', () => {
+        state.nudgeStep = state.nudgeStep === 1 ? 10 : 1;
+        nudgeStepBtn.textContent = `${state.nudgeStep}px`;
+      });
+
+      touchNudgePad.querySelectorAll('[data-nudge]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const layer = getSelectedLayer();
+          if (!layer) return;
+          pushHistory();
+          const dir = btn.getAttribute('data-nudge');
+          const step = state.nudgeStep;
+          if (dir === 'left') layer.x -= step;
+          if (dir === 'right') layer.x += step;
+          if (dir === 'up') layer.y -= step;
+          if (dir === 'down') layer.y += step;
+          updateInspector();
+        });
+      });
+
+      uploadScreenshotBtn.addEventListener('click', () => imageFileInput.click());
+      emptyPickBtn.addEventListener('click', () => imageFileInput.click());
+      imageFileInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) loadScreenshotFromFile(e.target.files[0]);
+        e.target.value = '';
+      });
+
+      loadDemoBtn.addEventListener('click', generateSampleDashboardImage);
+      emptyDemoBtn.addEventListener('click', generateSampleDashboardImage);
+
+      saveProjectBtn.addEventListener('click', saveProjectJSON);
+      loadProjectBtn.addEventListener('click', () => projectFileInput.click());
+      projectFileInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) loadProjectFromJSONFile(e.target.files[0]);
+        e.target.value = '';
+      });
+
+      exportPngBtn.addEventListener('click', exportRemixedPNG);
+
+      zoomInBtn.addEventListener('click', () => {
+        const rect = canvasStage.getBoundingClientRect();
+        zoomAtPoint(state.zoom * 1.25, rect.width / 2, rect.height / 2);
+      });
+      zoomOutBtn.addEventListener('click', () => {
+        const rect = canvasStage.getBoundingClientRect();
+        zoomAtPoint(state.zoom / 1.25, rect.width / 2, rect.height / 2);
+      });
+      zoomFitBtn.addEventListener('click', fitCanvasToViewport);
+
+      window.addEventListener('resize', () => {
+        if (state.hasImage) {
+          updateZoomHUD();
+        }
+      });
+
+      // Start Render Loop
+      window.onload = function () {
+        renderLayersPanel();
+        updateToolbarButtons();
+        requestAnimationFrame(renderViewport);
+      };
+    })();
+  </script>
+</body>
+</html>
