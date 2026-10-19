@@ -6,6 +6,8 @@ Box-select any piece of a screenshot (a card, a button, a sidebar) and it lifts 
 
 Everything runs locally. Images never leave your device.
 
+**Try it:** https://dalecri.github.io/Layout-remixer/
+
 ## Features
 
 - **Cut & move**: drag a box to cut, drag the cutout anywhere, nudge with arrow keys
@@ -56,6 +58,10 @@ npm run preview   # serves the production build
 | Save / Open project | `Ctrl/Cmd + S` / `Ctrl/Cmd + O` |
 | Export PNG / Copy PNG | `Ctrl/Cmd + E` / `Ctrl/Cmd + Shift + C` |
 | Show all shortcuts | `?` |
+
+## Deployment
+
+Every push to `main` runs `.github/workflows/deploy.yml`, which builds the app and publishes `dist/` to the `gh-pages` branch. GitHub Pages serves that branch at the link above.
 
 ## Project structure
 
